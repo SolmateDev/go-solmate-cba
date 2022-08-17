@@ -14,7 +14,7 @@ import (
 type UpdateValidator struct {
 	CrankFeeRateNum *uint64
 	CrankFeeRateDen *uint64
-	GrpcUrl         *[128]uint8
+	Address         *ProxyAddress
 
 	// [0] = [] controller
 	//
@@ -46,9 +46,9 @@ func (inst *UpdateValidator) SetCrankFeeRateDen(crankFeeRateDen uint64) *UpdateV
 	return inst
 }
 
-// SetGrpcUrl sets the "grpcUrl" parameter.
-func (inst *UpdateValidator) SetGrpcUrl(grpcUrl [128]uint8) *UpdateValidator {
-	inst.GrpcUrl = &grpcUrl
+// SetAddress sets the "address" parameter.
+func (inst *UpdateValidator) SetAddress(address ProxyAddress) *UpdateValidator {
+	inst.Address = &address
 	return inst
 }
 
@@ -122,8 +122,8 @@ func (inst *UpdateValidator) Validate() error {
 		if inst.CrankFeeRateDen == nil {
 			return errors.New("CrankFeeRateDen parameter is not set")
 		}
-		if inst.GrpcUrl == nil {
-			return errors.New("GrpcUrl parameter is not set")
+		if inst.Address == nil {
+			return errors.New("Address parameter is not set")
 		}
 	}
 
@@ -157,7 +157,7 @@ func (inst *UpdateValidator) EncodeToTree(parent ag_treeout.Branches) {
 					instructionBranch.Child("Params[len=3]").ParentFunc(func(paramsBranch ag_treeout.Branches) {
 						paramsBranch.Child(ag_format.Param("CrankFeeRateNum", *inst.CrankFeeRateNum))
 						paramsBranch.Child(ag_format.Param("CrankFeeRateDen", *inst.CrankFeeRateDen))
-						paramsBranch.Child(ag_format.Param("        GrpcUrl", *inst.GrpcUrl))
+						paramsBranch.Child(ag_format.Param("        Address", *inst.Address))
 					})
 
 					// Accounts of the instruction:
@@ -182,8 +182,8 @@ func (obj UpdateValidator) MarshalWithEncoder(encoder *ag_binary.Encoder) (err e
 	if err != nil {
 		return err
 	}
-	// Serialize `GrpcUrl` param:
-	err = encoder.Encode(obj.GrpcUrl)
+	// Serialize `Address` param:
+	err = encoder.Encode(obj.Address)
 	if err != nil {
 		return err
 	}
@@ -200,8 +200,8 @@ func (obj *UpdateValidator) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (er
 	if err != nil {
 		return err
 	}
-	// Deserialize `GrpcUrl`:
-	err = decoder.Decode(&obj.GrpcUrl)
+	// Deserialize `Address`:
+	err = decoder.Decode(&obj.Address)
 	if err != nil {
 		return err
 	}
@@ -213,7 +213,7 @@ func NewUpdateValidatorInstruction(
 	// Parameters:
 	crankFeeRateNum uint64,
 	crankFeeRateDen uint64,
-	grpcUrl [128]uint8,
+	address ProxyAddress,
 	// Accounts:
 	controller ag_solanago.PublicKey,
 	validatorPipeline ag_solanago.PublicKey,
@@ -222,7 +222,7 @@ func NewUpdateValidatorInstruction(
 	return NewUpdateValidatorInstructionBuilder().
 		SetCrankFeeRateNum(crankFeeRateNum).
 		SetCrankFeeRateDen(crankFeeRateDen).
-		SetGrpcUrl(grpcUrl).
+		SetAddress(address).
 		SetControllerAccount(controller).
 		SetValidatorPipelineAccount(validatorPipeline).
 		SetAdminAccount(admin).

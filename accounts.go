@@ -294,7 +294,7 @@ type Pipeline struct {
 	PipelineBump uint8
 	Admin        ag_solanago.PublicKey
 	CrankFeeRate [2]uint64
-	GrpcUrl      [128]uint8
+	Address      ProxyAddress
 	Periods      ag_solanago.PublicKey
 	Bids         ag_solanago.PublicKey
 }
@@ -332,8 +332,8 @@ func (obj Pipeline) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	if err != nil {
 		return err
 	}
-	// Serialize `GrpcUrl` param:
-	err = encoder.Encode(obj.GrpcUrl)
+	// Serialize `Address` param:
+	err = encoder.Encode(obj.Address)
 	if err != nil {
 		return err
 	}
@@ -389,8 +389,8 @@ func (obj *Pipeline) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error
 	if err != nil {
 		return err
 	}
-	// Deserialize `GrpcUrl`:
-	err = decoder.Decode(&obj.GrpcUrl)
+	// Deserialize `Address`:
+	err = decoder.Decode(&obj.Address)
 	if err != nil {
 		return err
 	}
